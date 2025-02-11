@@ -87,7 +87,10 @@ namespace FormsApp
                         var serializer = new SerializerBuilder()
                             .WithNamingConvention(CamelCaseNamingConvention.Instance)
                             .Build();
-                        var yaml = serializer.Serialize(points);
+                        using (var writer = new StreamWriter(fs)) // Используем StreamWriter для записи в файл
+                        {
+                            serializer.Serialize(writer, points); // Сериализуем и записываем в файл
+                        }
                         break;
                 }
             }
@@ -98,7 +101,7 @@ namespace FormsApp
         private void btnDeserialize_Click(object sender, EventArgs e)
         {
             var dlg = new OpenFileDialog();
-            dlg.Filter = "SOAP|*.soap|XML|*.xml|JSON|*.json|Binary|*.bin|YAML|*.yaml";
+            dlg.Filter = "SOAP|*.soap|XML|*.xml|JSON|*.json|Binary|*.bin";
 
             if (dlg.ShowDialog() != DialogResult.OK)
                 return;
@@ -125,11 +128,7 @@ namespace FormsApp
                         using (var r = new StreamReader(fs))
                             points = (Point[])jf.Deserialize(r, typeof(Point[]));
                         break;
-                    case ".yaml":
-                        var deserializer = new DeserializerBuilder()
-                            .WithNamingConvention(CamelCaseNamingConvention.Instance)
-                            .Build();
-                        break;
+                    
 
 
 
