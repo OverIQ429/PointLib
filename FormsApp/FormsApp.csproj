@@ -56,7 +56,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Class1.cs" />
+    <Compile Include="Point3D.cs" />
     <Compile Include="Ini.cs" />
     <Compile Include="jimmy_form.cs" />
     <Compile Include="PointForm.cs">

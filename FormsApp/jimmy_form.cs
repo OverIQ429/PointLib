@@ -29,10 +29,26 @@ namespace FormsApp
             writer.Write(points.Count);
             for (int i = 0; i < points.Count; i++)
             {
-                string pointString = $"{points[i]}";
+                string pointString = $"{points[i].X}, {points[i].Y},";
                 writer.Write(pointString);
             }
             
+        }
+
+        public static Point3D[] Deserialize(BinaryReader path)
+        {
+            List<jimmy_form> forms = new List<jimmy_form>();
+            int count = path.ReadInt32();
+            Console.WriteLine($"Количество точек для десериализации: {count}");
+            Point3D[] points = new Point3D[forms.Count];
+            for (int i = 0; i < count; i++)
+            {
+                string pointString = path.ReadString();
+                Console.WriteLine($"Десериализованная строка: {pointString}");
+                forms.Add(new jimmy_form(pointString));
+                points[i] = new Point3D(pointString[0], pointString[1], pointString[2]);
+            }
+            return points;
         }
     }
 }
