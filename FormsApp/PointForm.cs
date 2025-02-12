@@ -128,15 +128,6 @@ namespace FormsApp
                         using (var r = new StreamReader(fs))
                             points = (Point[])jf.Deserialize(r, typeof(Point[]));
                         break;
-                    case ".jimmyform":
-                        using (var path = new BinaryReader(fs))
-                        {
-                            jimmy_form.Deserialize(path);
-                        }
-                        break;
-
-
-
 
                 }
             }
