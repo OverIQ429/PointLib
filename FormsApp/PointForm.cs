@@ -3,7 +3,6 @@ using Newtonsoft.Json.Linq;
 using PointLib;
 using System;
 using System.Collections.Generic;
-using IniFileParser;
 using System.IO;
 using System.Runtime.Serialization.Formatters.Binary;
 using System.Runtime.Serialization.Formatters.Soap;
@@ -131,7 +130,7 @@ namespace FormsApp
                     case ".jimmyform":
                         using (var path = new BinaryReader(fs))
                         {
-                            points = jimmy_form.Deserialize(path);
+                            points = (Point[])jimmy_form.Deserialize(path);
                         }
                         break;
 
