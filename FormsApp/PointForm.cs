@@ -1,14 +1,18 @@
 ﻿using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using PointLib;
 using System;
 using System.Collections.Generic;
+using IniFileParser;
 using System.IO;
 using System.Runtime.Serialization.Formatters.Binary;
 using System.Runtime.Serialization.Formatters.Soap;
 using System.Windows.Forms;
 using System.Xml.Serialization;
+using YamlDotNet.Core.Tokens;
 using YamlDotNet.Serialization;
 using YamlDotNet.Serialization.NamingConventions;
+using System.Runtime.Serialization;
 
 namespace FormsApp
 {
@@ -19,7 +23,7 @@ namespace FormsApp
         {
             InitializeComponent();
         }
-
+        
         private void listBox1_SelectedIndexChanged(object sender, EventArgs e)
         {
 
@@ -56,11 +60,9 @@ namespace FormsApp
         private void btnSerialize_Click(object sender, EventArgs e)
         {
             var dlg = new SaveFileDialog();
-            dlg.Filter = "SOAP|*.soap|XML|*.xml|JSON|*.json|Binary|*.bin|YAML|*.yaml";
-
+            dlg.Filter = "SOAP|*.soap|XML|*.xml|JSON|*.json|Binary|*.bin|YAML|*.yaml|JMF|*.jimmyform";
             if (dlg.ShowDialog() != DialogResult.OK)
                 return;
-
             using (var fs =
                 new FileStream(dlg.FileName, FileMode.Create, FileAccess.Write))
             {
@@ -83,15 +85,13 @@ namespace FormsApp
                         using (var w = new StreamWriter(fs))
                             jf.Serialize(w, points);
                         break;
-                    case ".yaml":
-                        var serializer = new SerializerBuilder()
-                            .WithNamingConvention(CamelCaseNamingConvention.Instance)
-                            .Build();
-                        using (var writer = new StreamWriter(fs)) // Используем StreamWriter для записи в файл
+                    case ".jimmyform":
+                        using (var path = new BinaryWriter(fs))
                         {
-                            serializer.Serialize(writer, points); // Сериализуем и записываем в файл
+                            jimmy_form.Serialize(path, points);
                         }
                         break;
+
                 }
             }
 
@@ -101,7 +101,7 @@ namespace FormsApp
         private void btnDeserialize_Click(object sender, EventArgs e)
         {
             var dlg = new OpenFileDialog();
-            dlg.Filter = "SOAP|*.soap|XML|*.xml|JSON|*.json|Binary|*.bin";
+            dlg.Filter = "SOAP|*.soap|XML|*.xml|JSON|*.json|Binary|*.bin|JMF|*.jimmyform";
 
             if (dlg.ShowDialog() != DialogResult.OK)
                 return;
@@ -128,7 +128,13 @@ namespace FormsApp
                         using (var r = new StreamReader(fs))
                             points = (Point[])jf.Deserialize(r, typeof(Point[]));
                         break;
-                    
+                    case ".jimmyform":
+                        using (var path = new BinaryReader(fs))
+                        {
+                            jimmy_form.Deserialize(path);
+                        }
+                        break;
+
 
 
 
